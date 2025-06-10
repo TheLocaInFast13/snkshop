@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscordTags Pro - Services Discord Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f0f23;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 60px 0 40px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(88, 101, 242, 0.1) 0%, transparent 100%);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #5865f2;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #b9bbbe;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #b9bbbe;
+            margin-bottom: 60px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .pricing-card {
+            background: #1e1f22;
+            border: 2px solid #2b2d31;
+            border-radius: 16px;
+            padding: 40px 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: #5865f2;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(88, 101, 242, 0.15);
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #5865f2, #7289da);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .plan-description {
+            color: #b9bbbe;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        .price {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 32px;
+        }
+
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #5865f2;
+        }
+
+        .price-currency {
+            font-size: 1.2rem;
+            color: #b9bbbe;
+            margin-left: 4px;
+        }
+
+        .price-period {
+            font-size: 0.9rem;
+            color: #72767d;
+            margin-left: 8px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            background: #5865f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .feature-icon::after {
+            content: "✓";
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .cta-button {
+            width: 100%;
+            background: #5865f2;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: none;
+        }
+
+        .cta-button:hover {
+            background: #4752c4;
+            transform: translateY(-1px);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            background: #1e1f22;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            border: 2px solid #2b2d31;
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #b9bbbe;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+            color: #f04747;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .modal-message {
+            color: #b9bbbe;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .modal-button {
+            background: #5865f2;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .modal-button:hover {
+            background: #4752c4;
+        }
+
+        /* Trust indicators */
+        .trust-section {
+            text-align: center;
+            padding: 60px 0;
+            background: #1e1f22;
+            margin-top: 80px;
+            border-radius: 16px;
+        }
+
+        .trust-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .trust-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .trust-description {
+            color: #b9bbbe;
+            font-size: 0.9rem;
+        }
+
+        /* Status Banner */
+        .status-banner {
+            background: linear-gradient(90deg, #f04747, #d63031);
+            color: white;
+            text-align: center;
+            padding: 12px 20px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .status-banner::before {
+            content: "⚠️";
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal {
+                padding: 24px;
+                margin: 20px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Status Banner -->
+    <div class="status-banner">
+        Les ventes sont temporairement suspendues - Revenez bientôt !
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">DiscordTags Pro</h1>
+            <p class="tagline">Services Discord premium avec tags personnalisés et fonctionnalités avancées</p>
+        </header>
+
+        <!-- Pricing Section -->
+        <section class="pricing-section">
+            <h2 class="section-title">Choisissez votre plan</h2>
+            <p class="section-subtitle">Devenez propriétaire d'un serveur Discord avec accès aux tags exclusifs</p>
+            
+            <div class="pricing-grid">
+                <!-- Basic Plan -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">Tags Standard</h3>
+                    <p class="plan-description">Plan de base pour débuter</p>
+                    
+                    <div class="price">
+                        <span class="price-amount">4</span>
+                        <span class="price-currency">€</span>
+                        <span class="price-period">paiement unique</span>
+                    </div>
+                    
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="feature-icon"></span>
+                            Pas de boosts inclus
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon"></span>
+                            Serveur éligible au tag
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon"></span>
+                            Propriété du serveur
+                        </li>
+                    </ul>
+                    
+                    <button class="cta-button" onclick="showUnavailableMessage()">
+                        Choisir ce plan
+                    </button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="pricing-card">
+                    <div class="premium-badge">RECOMMANDÉ</div>
+                    <h3 class="plan-name">Tags Premium</h3>
+                    <p class="plan-description">Plan complet avec boost inclus</p>
+                    
+                    <div class="price">
+                        <span class="price-amount">15</span>
+                        <span class="price-currency">€</span>
+                        <span class="price-period">paiement unique</span>
+                    </div>
+                    
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="feature-icon"></span>
+                            Serveur avec tag personnalisé
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon"></span>
+                            1 boost inclus pour l'activation auto
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon"></span>
+                            Propriété du serveur
+                        </li>
+                    </ul>
+                    
+                    <button class="cta-button" onclick="showUnavailableMessage()">
+                        Choisir ce plan
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Section -->
+        <section class="trust-section">
+            <h3 class="section-title">Pourquoi nous faire confiance ?</h3>
+            <div class="trust-items">
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <h4 class="trust-title">Activation instantanée</h4>
+                    <p class="trust-description">Vos tags seront activés automatiquement après paiement</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🔒</div>
+                    <h4 class="trust-title">Paiement sécurisé</h4>
+                    <p class="trust-description">Transactions protégées par PayPal</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🎯</div>
+                    <h4 class="trust-title">Support 24/7</h4>
+                    <p class="trust-description">Assistance rapide en cas de besoin</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">💎</div>
+                    <h4 class="trust-title">Tags permanents</h4>
+                    <p class="trust-description">Aucun abonnement, achat unique</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Unavailable Modal -->
+    <div class="modal-overlay" id="unavailableModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <div class="modal-icon">🚧</div>
+            <h2 class="modal-title">Ventes temporairement suspendues</h2>
+            <p class="modal-message">
+                Désolé ! Nos services ne sont pas encore disponibles à l'achat.<br>
+                Nous travaillons dur pour vous offrir la meilleure expérience possible.<br><br>
+                <strong>Revenez bientôt ou contactez-nous pour être notifié de l'ouverture !</strong>
+            </p>
+            
+            <button class="modal-button" onclick="closeModal()">
+                Compris !
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function showUnavailableMessage() {
+            document.getElementById('unavailableModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Ajouter un effet de secousse aux boutons
+            const buttons = document.querySelectorAll('.cta-button');
+            buttons.forEach(button => {
+                button.classList.add('shake');
+                setTimeout(() => {
+                    button.classList.remove('shake');
+                }, 500);
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('unavailableModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fermer avec Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Clic en dehors du modal
+        document.getElementById('unavailableModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Animation d'entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.pricing-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
