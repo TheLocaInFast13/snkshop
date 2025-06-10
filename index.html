@@ -501,7 +501,7 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1 class="logo">DiscordTags Pro</h1>
+            <h1 class="logo">SNK Shop - Ventes de tags </h1>
             <p class="tagline">Services Discord premium avec tags personnalisés et fonctionnalités avancées</p>
         </header>
 
@@ -641,9 +641,12 @@
                         type="text" 
                         id="discordUsername" 
                         class="form-input" 
-                        placeholder="Exemple: MonNom#1234 ou @monnom"
+                        placeholder="@nomutilisateur, Nom#1234 ou nom_utilisateur"
                         required
                     >
+                    <small style="color: #72767d; font-size: 0.8rem; margin-top: 4px; display: block;">
+                        Formats acceptés: @nomutilisateur, Nom#1234 ou nom_utilisateur
+                    </small>
                 </div>
                 
                 <div class="form-buttons">
@@ -711,6 +714,53 @@
             }
         }
 
+        // Fonction de validation Discord
+        function isValidDiscordUsername(username) {
+            // Nouveau format Discord (depuis 2023) : @nom_utilisateur
+            const newFormatRegex = /^@[a-z0-9._]{2,32}$/i;
+            
+            // Ancien format Discord : Nom#1234
+            const oldFormatRegex = /^.{1,32}#[0-9]{4}$/;
+            
+            // Format display name simple (sans @ ni #)
+            const displayNameRegex = /^[^\s@#:]{1,32}$/;
+            
+            return newFormatRegex.test(username) || 
+                   oldFormatRegex.test(username) || 
+                   displayNameRegex.test(username);
+        }
+
+        function showUsernameError(message) {
+            const input = document.getElementById('discordUsername');
+            input.style.borderColor = '#f04747';
+            
+            // Créer ou mettre à jour le message d'erreur
+            let errorMsg = document.getElementById('usernameError');
+            if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.id = 'usernameError';
+                errorMsg.style.cssText = `
+                    color: #f04747;
+                    font-size: 0.85rem;
+                    margin-top: 8px;
+                    padding: 8px 12px;
+                    background: rgba(240, 71, 71, 0.1);
+                    border-radius: 6px;
+                    border-left: 3px solid #f04747;
+                `;
+                input.parentNode.appendChild(errorMsg);
+            }
+            errorMsg.textContent = message;
+            
+            // Supprimer l'erreur après focus
+            input.addEventListener('focus', function() {
+                input.style.borderColor = '#5865f2';
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+            }, { once: true });
+        }
+
         // Gestion du formulaire de contact
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -719,7 +769,13 @@
             const submitBtn = document.getElementById('submitBtn');
             
             if (!username) {
-                alert('Veuillez entrer votre nom d\'utilisateur Discord');
+                showUsernameError('Veuillez entrer votre nom d\'utilisateur Discord');
+                return;
+            }
+            
+            // Validation du format Discord
+            if (!isValidDiscordUsername(username)) {
+                showUsernameError('Format invalide. Utilisez: @nomutilisateur, Nom#1234 ou nom_utilisateur');
                 return;
             }
             
@@ -737,7 +793,38 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        content: `🆘 **Nouvelle demande d'aide !**\n\n**Utilisateur Discord:** ${username}\n**Message:** ${username} a besoin d'aide !\n\n*Demande envoyée depuis le site SNK Shop*`
+                        username: "SNK Shop - Support",
+                        avatar_url: "https://cdn.discordapp.com/emojis/1234567890123456789.png", // Optionnel
+                        embeds: [{
+                            title: "🆘 Nouvelle demande d'aide !",
+                            description: `Un utilisateur a besoin d'assistance depuis le site web.`,
+                            color: 0x5865F2, // Couleur Discord Blurple
+                            fields: [
+                                {
+                                    name: "👤 Utilisateur Discord",
+                                    value: `\`${username}\``,
+                                    inline: true
+                                },
+                                {
+                                    name: "📝 Message",
+                                    value: `${username} a besoin d'aide !`,
+                                    inline: true
+                                },
+                                {
+                                    name: "🌐 Source",
+                                    value: "Site SNK Shop",
+                                    inline: true
+                                }
+                            ],
+                            thumbnail: {
+                                url: "https://cdn.discordapp.com/emojis/1234567890123456789.png" // Icône d'aide
+                            },
+                            footer: {
+                                text: "SNK Shop - Système de support automatique",
+                                icon_url: "https://cdn.discordapp.com/emojis/1234567890123456789.png"
+                            },
+                            timestamp: new Date().toISOString()
+                        }]
                     })
                 });
                 
